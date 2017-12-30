@@ -2,6 +2,7 @@ package com.example.android.boost;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,7 +27,8 @@ public class MainScreenActivity extends AppCompatActivity {
             public void onClick(View view) {
                 try {   // creating url with api_key... dunno if need
                     URL endpoint = new URL(URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY);
-                    new ConnectToServerTask().execute(endpoint);
+                    //System.out.println(URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY);
+                    new ConnectToServerTask(MainScreenActivity.this).execute(endpoint);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
