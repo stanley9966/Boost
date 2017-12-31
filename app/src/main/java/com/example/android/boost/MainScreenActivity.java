@@ -10,12 +10,6 @@ import java.net.URL;
 
 public class MainScreenActivity extends AppCompatActivity {
 
-    private static final String REGION = "na1";
-    private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String SUMMONER_NAME = "Ankspankin";
-    private static final String TEMP_API_KEY = "RGAPI-f2f43144-ec93-4ef9-bf47-a7fa80d68ee8";
-    private static final String SUMMONER_ID = "200612155";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +19,8 @@ public class MainScreenActivity extends AppCompatActivity {
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {   // creating url with api_key... dunno if need
-                    URL endpoint = new URL(URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY);
-                    //System.out.println(URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY);
-                    new ConnectToServerTask(MainScreenActivity.this).execute(endpoint);
+                try {
+                    new ConnectToServerTask(MainScreenActivity.this).execute();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
