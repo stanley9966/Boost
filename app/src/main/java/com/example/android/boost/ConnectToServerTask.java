@@ -1,5 +1,6 @@
 package com.example.android.boost;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -41,22 +42,41 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     // Data for Summoner2
     private String mS2AccountID;
 
+    /**
+     * Constructor for the Asynctask, initializes the mMainScreenActivity, which is used to launch
+     * QueryResultsScreen in postExecute()
+     *
+     * @param main main activity passed
+     */
     public ConnectToServerTask(Activity main) {
         mMainScreenActivity = main;
     }
 
 
-    // show the progress bar
+    /**
+     * hides the button in mainScreenActivity
+     */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         mMainScreenActivity.findViewById(R.id.connect_button).setVisibility(View.INVISIBLE);
     }
 
-    // gonna be passed the url...
-    // call riot rest api and handle the response
+    /**
+     * Does all the querying to the Riot Api, below is the order in which it does so:
+     * 1. Queries summoner_name, storing accountId
+     * 2. Queries accountId
+     * 3. Queries matchHistory - last 8 games,
+     * 4. Queries matchIds, stores results in mGameIdsAndWinLossMap, matchIds and default value of false
+     * 5. For each match, queries match, determines which player won, then updates
+     *      mGameIdsAndWinLossMap accordingly
+     *
+     * @param strings TODO: update this when figure out what it does
+     * @return  TODO:
+     */
+    @SuppressLint("UseSparseArrays")
     @Override
-    protected Void doInBackground(String... strings) {    // NO STRINGS PASSED
+    protected Void doInBackground(String... strings) {
         Log.d(TAG, "doInBackground: ");
         boolean debug = false;
         boolean debug2 = true;
@@ -208,7 +228,10 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     }
 
 
-    // update the progress bar
+    /**
+     *
+     * @param values // TODO:
+     */
     @Override
     protected void onProgressUpdate(Integer... values) {
         super.onProgressUpdate(values);
@@ -217,6 +240,13 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
 
     // hide the progress bar
     // launches another activity, passing the required information over..
+
+    /**
+     * Sets the visibility of the button to VISIBLE, and launches QueryResultsScreen through
+     * explicit intent, passing in extra data mGameIdsAndWinLossMap and mMatchArrayList
+     *
+     * @param avoid // TODO
+     */
     @Override
     protected void onPostExecute(Void avoid) {
         boolean debug = true;
@@ -232,6 +262,12 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
         mMainScreenActivity.startActivity(intent);
     }
 
+    /**
+     * Converts an inputStream to String
+     *
+     * @param is inputStream to be converted
+     * @return String version of inputStream
+     */
     private String convertStreamToString(InputStream is) {
         try {
             return new java.util.Scanner(is).useDelimiter("\\A").next();
