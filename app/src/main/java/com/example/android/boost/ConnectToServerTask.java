@@ -1,26 +1,21 @@
 package com.example.android.boost;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.util.LongSparseArray;
 import android.view.View;
-import android.widget.Button;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,10 +29,11 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     //URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY
     private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
     private static final String SUMMONER_NAME = "Obstinate";
-    private static final String TEMP_API_KEY = "RGAPI-b46a40ce-ff93-41c0-b887-b870e2f1c229";
+    private static final String TEMP_API_KEY = "RGAPI-19e26648-83e1-4f1a-b1b5-d2fe9c2be82c";
 
     private Activity mMainScreenActivity;
-    private JSONObject mjsonObject;
+    private HashMap<Long, Boolean> mGameIdsAndWinLossMap;
+    private ArrayList<Long> mMatchArrayList = new ArrayList<>();
 
     // Data for Summoner1
     private String mS1AccountID;
@@ -64,6 +60,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
         Log.d(TAG, "doInBackground: ");
         boolean debug = false;
         boolean debug2 = true;
+        JSONObject mjsonObject;
 
         try {
             InputStream inputStream;
@@ -109,22 +106,23 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
             if (debug) System.out.println(json);
 
             // creating and filling the gameIdsandWinLossMap with gameId and defaults to a loss
-            Map<Long, Boolean> gameIdsAndWinLossMap = new LinkedHashMap<>();
+            mGameIdsAndWinLossMap = new HashMap<>();
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray("matches");
 
             for (int i = 0; i < jsonArray.length(); i++) {
-                Long matchId;
-                Boolean won = false;
+                long matchId;
+                boolean won = false;
                 JSONObject matchInfo = jsonArray.getJSONObject(i);
                 matchId = matchInfo.getLong("gameId");
-                gameIdsAndWinLossMap.put(matchId, won);
+                mGameIdsAndWinLossMap.put(matchId, won);
+                mMatchArrayList.add(i, matchId);
             }
 
             // prints out contents of gameIds...map
             if (debug2) {
                 System.out.println("original");
-                Set set = gameIdsAndWinLossMap.entrySet();
+                Set set = mGameIdsAndWinLossMap.entrySet();
                 // Displaying elements of LinkedHashMap
                 Iterator iterator = set.iterator();
                 while (iterator.hasNext()) {
@@ -135,7 +133,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
             }
 
             // setup for match query
-            Set entrySet = gameIdsAndWinLossMap.entrySet();
+            Set entrySet = mGameIdsAndWinLossMap.entrySet();
             Iterator keyIterator = entrySet.iterator();
 
             URL matchIdURL;
@@ -181,14 +179,14 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
                     won = false;
                 }
                 if (inFirstFive && won || !inFirstFive && !won) {
-                    gameIdsAndWinLossMap.put((Long)me.getKey(), true);
+                    mGameIdsAndWinLossMap.put((Long)me.getKey(), true);
                 }
             }
 
             // prints out values of updated map
             if (debug2) {
                 System.out.println("changed");
-                Set set = gameIdsAndWinLossMap.entrySet();
+                Set set = mGameIdsAndWinLossMap.entrySet();
                 // Displaying elements of LinkedHashMap
                 Iterator iterator = set.iterator();
                 while (iterator.hasNext()) {
@@ -221,11 +219,17 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     // launches another activity, passing the required information over..
     @Override
     protected void onPostExecute(Void avoid) {
+        boolean debug = true;
+        if (debug) System.out.println("onPostExecute\n");
+
         super.onPostExecute(avoid);
         mMainScreenActivity.findViewById(R.id.connect_button).setVisibility(View.VISIBLE);
 
-        // launch another activity... passing in that json+
-
+        // launch another activity... passing in that json
+        Intent intent = new Intent(mMainScreenActivity.getApplicationContext(), QueryResultsScreen.class);
+        intent.putExtra("gameIdsAndWinLossMap", mGameIdsAndWinLossMap);
+        intent.putExtra("matchArrayList", mMatchArrayList);
+        mMainScreenActivity.startActivity(intent);
     }
 
     private String convertStreamToString(InputStream is) {
