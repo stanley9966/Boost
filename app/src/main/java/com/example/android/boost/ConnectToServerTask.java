@@ -29,17 +29,19 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
 
     //URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY
     private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String SUMMONER_NAME = "Obstinate";
-    private static final String TEMP_API_KEY = "RGAPI-19e26648-83e1-4f1a-b1b5-d2fe9c2be82c";
+
+    private static final String TEMP_API_KEY = "RGAPI-dcbb616b-eb9c-4608-901a-78b65931c29f";
 
     private Activity mMainScreenActivity;
     private HashMap<Long, Boolean> mGameIdsAndWinLossMap;
     private ArrayList<Long> mMatchArrayList = new ArrayList<>();
 
     // Data for Summoner1
+    private static final String SUMMONER_NAME = "Obstinate";
     private String mS1AccountID;
 
     // Data for Summoner2
+    private static final String SECOND_SUMMONER_NAME = "Gooben";
     private String mS2AccountID;
 
     /**
@@ -103,7 +105,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
             // printing summoner1 ID
             System.out.println(mS1AccountID);
 
-            //constructing URL_Query for 20 ranked game match history
+            //constructing URL_Query for ranked game match history
             Uri.Builder builder = new Uri.Builder();
             builder.scheme("https")
                     .authority("na1.api.riotgames.com")
@@ -114,7 +116,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
                     .appendPath("by-account")
                     .appendPath(mS1AccountID)
                     .appendQueryParameter("queue", "420")   // 420 is solo/duo ranked 5v5
-                    .appendQueryParameter("endIndex", "8")   // start: 0 -- end: 2 --> only 2 games printed
+                    .appendQueryParameter("endIndex", "25")   // start: 0 -- end: 2 --> only 2 games printed
                     .appendQueryParameter("api_key", TEMP_API_KEY);
             URL rankedGameMatchURL = new URL(builder.build().toString());
             HttpsURLConnection rankedGameHistoryHttpsURLConnection = (HttpsURLConnection) rankedGameMatchURL.openConnection();
@@ -179,26 +181,60 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
                 json = convertStreamToString(inputStream);
                 JSONObject matchJsonObject = new JSONObject(json);
                 JSONArray participantIdentities = matchJsonObject.getJSONArray("participantIdentities");
-                boolean inFirstFive = false;
-                for (int i = 0; i < 5; i++) {
+
+                boolean firstInFirstFive = false;
+                boolean secondInFirstFive = false;
+                boolean hasSecond = false;
+                boolean sameTeam = false;
+
+                for (int i = 0; i < 10; i++) {
                     JSONObject playerAndId = participantIdentities.getJSONObject(i);
                     JSONObject player = playerAndId.getJSONObject("player");
                     String summonerName = player.getString("summonerName");
+
+                    // checking for 2nd summoner and finding out if within first 5
+                    if (summonerName.equals(SECOND_SUMMONER_NAME)) {
+                        hasSecond = true;
+                        if (i < 5) {
+                            secondInFirstFive = true;
+                        }
+                        continue;
+                    }
+
+                    // checking if Obstinate is in first 5
                     if (summonerName.equals(SUMMONER_NAME)) {
-                        inFirstFive = true;
-                        break;
+                        if (i < 5) {
+                            firstInFirstFive = true;
+                        }
+                    }
+                    // just gonna let it loop till end
+                }
+
+                // if doesn't have second, then no way sameTeam is true
+                if (hasSecond) {
+                    if (firstInFirstFive == secondInFirstFive) {
+                        sameTeam = true;
                     }
                 }
+
+                // if not both summoners in game, remove that gameId and break out
+                if (!sameTeam) {
+                    mGameIdsAndWinLossMap.put((Long) me.getKey(), null);
+                    continue;
+                }
+
+                // sameTeam must be true to get here
 
                 // see if that team won or lost
                 JSONArray teams = matchJsonObject.getJSONArray("teams");
                 JSONObject team1 = teams.getJSONObject(0);
+
                 String win = team1.getString("win");
                 boolean won = true;
                 if (win.equals("Fail")) {
                     won = false;
                 }
-                if (inFirstFive && won || !inFirstFive && !won) {
+                if (firstInFirstFive && won || !firstInFirstFive && !won) {
                     mGameIdsAndWinLossMap.put((Long)me.getKey(), true);
                 }
             }

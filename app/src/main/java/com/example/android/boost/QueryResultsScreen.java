@@ -48,7 +48,8 @@ public class QueryResultsScreen extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new Adapter((ArrayList<Long>) getIntent().getSerializableExtra("matchArrayList"));
+        mAdapter = new Adapter((ArrayList<Long>) getIntent().getSerializableExtra("matchArrayList"),
+                (HashMap<Long, Boolean>) getIntent().getSerializableExtra("gameIdsAndWinLossMap"));
         mRecyclerView.setAdapter(mAdapter);
 
 
