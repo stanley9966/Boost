@@ -18,17 +18,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     private HashMap<Long, Boolean> mMapData;
 
     public Adapter(ArrayList<Long> arrayList, HashMap<Long, Boolean> map) {
-        // getting rid of the nulls and removing correspoding arraylist elements
-        Iterator<Long> itr = arrayList.iterator();
-        while(itr.hasNext()) {
-            Long key = itr.next();
-            if (map.get(key) == null) {
-                map.remove(key);
-                itr.remove();
-            }
-        }
         mData = arrayList;
         mMapData = map;
+    }
+
+    public ArrayList<Long> getmData() {
+        return mData;
     }
 
     // inner class ViewHolder

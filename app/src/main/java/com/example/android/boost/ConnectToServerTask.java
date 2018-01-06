@@ -239,19 +239,6 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
                 }
             }
 
-            // prints out values of updated map
-            if (debug2) {
-                System.out.println("changed");
-                Set set = mGameIdsAndWinLossMap.entrySet();
-                // Displaying elements of LinkedHashMap
-                Iterator iterator = set.iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry me = (Map.Entry) iterator.next();
-                    System.out.print("Key is: " + me.getKey() +
-                            " & Value is: " + me.getValue() + "\n");
-                }
-            }
-
             summonerNameUrlConnection.disconnect();
             rankedGameHistoryHttpsURLConnection.disconnect();
             return null;
@@ -290,6 +277,16 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
 
         super.onPostExecute(avoid);
         mMainScreenActivity.findViewById(R.id.connect_button).setVisibility(View.VISIBLE);
+
+        // getting rid of the null values in mMatchArrayList and corresponding elements in the map
+        Iterator<Long> itr = mMatchArrayList.iterator();
+        while(itr.hasNext()) {
+            Long key = itr.next();
+            if (mGameIdsAndWinLossMap.get(key) == null) {
+                mGameIdsAndWinLossMap.remove(key);
+                itr.remove();
+            }
+        }
 
         // launch another activity... passing in that json
         Intent intent = new Intent(mMainScreenActivity.getApplicationContext(), QueryResultsScreen.class);

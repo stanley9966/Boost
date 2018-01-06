@@ -1,5 +1,6 @@
 package com.example.android.boost;
 
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,8 +26,6 @@ public class QueryResultsScreen extends AppCompatActivity {
 
     private ArrayList<Long> mMatchArrayList;
     private HashMap<Long, Boolean> mGameIdsAndWinLossMap;
-
-    private int screenWidth;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -55,32 +54,21 @@ public class QueryResultsScreen extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new Adapter((ArrayList<Long>) getIntent().getSerializableExtra("matchArrayList"),
-                (HashMap<Long, Boolean>) getIntent().getSerializableExtra("gameIdsAndWinLossMap"));
-        mRecyclerView.setAdapter(mAdapter);
-
-
-
-        // setting values of map and arraylist
         mMatchArrayList = (ArrayList<Long>) getIntent().getSerializableExtra("matchArrayList");
-        // mGameIdsAndWinLossMap = (HashMap<Long, Boolean>) getIntent().getSerializableExtra("gameIdsAndWinLossMap");
-        // might not need ^^ because was only being used in RecyclerView
+        mGameIdsAndWinLossMap = (HashMap<Long, Boolean>) getIntent().getSerializableExtra("gameIdsAndWinLossMap");
 
-        // to test print out values of map
-        boolean debug2 = false;
-        if (debug2) {
-            Set set = mGameIdsAndWinLossMap.entrySet();
-            // Displaying elements of LinkedHashMap
-            Iterator iterator = set.iterator();
-            while (iterator.hasNext()) {
-                Map.Entry me = (Map.Entry) iterator.next();
-                System.out.print("Key is: " + me.getKey() +
-                        " & Value is: " + me.getValue() + "\n");
-            }
-        }
+        mAdapter = new Adapter(mMatchArrayList, mGameIdsAndWinLossMap);
+        mRecyclerView.setAdapter(mAdapter);
 
         // adds back button in action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    public ArrayList<Long> getmMatchArrayList() {
+        return mMatchArrayList;
+    }
+
+    public HashMap<Long, Boolean> getmGameIdsAndWinLossMap() {
+        return mGameIdsAndWinLossMap;
+    }
 }
