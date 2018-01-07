@@ -9,10 +9,9 @@
 
     <com.example.android.boost.WinRateCircle
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="150dp"
         android:id="@+id/winRateCircleId"
-        android:paddingTop="10dp"
-        app:innerCircleRadius="100"/>
+        android:paddingTop="10dp" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

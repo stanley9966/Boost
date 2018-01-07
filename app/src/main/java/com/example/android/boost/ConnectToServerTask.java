@@ -30,11 +30,11 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     //URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY
     private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
 
-    private static final String TEMP_API_KEY = "RGAPI-dcbb616b-eb9c-4608-901a-78b65931c29f";
+    private static final String TEMP_API_KEY = "RGAPI-567a6583-4dd6-445a-ab15-6e4d17f3a8df";
 
     private Activity mMainScreenActivity;
-    private HashMap<Long, Boolean> mGameIdsAndWinLossMap;
-    private ArrayList<Long> mMatchArrayList = new ArrayList<>();
+    public static HashMap<Long, Boolean> mGameIdsAndWinLossMap;
+    public static ArrayList<Long> mMatchArrayList = new ArrayList<>();
 
     // Data for Summoner1
     private static final String SUMMONER_NAME = "Obstinate";
@@ -81,7 +81,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     protected Void doInBackground(String... strings) {
         Log.d(TAG, "doInBackground: ");
         boolean debug = false;
-        boolean debug2 = true;
+        boolean debug2 = false;
         JSONObject mjsonObject;
 
         try {
@@ -116,7 +116,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
                     .appendPath("by-account")
                     .appendPath(mS1AccountID)
                     .appendQueryParameter("queue", "420")   // 420 is solo/duo ranked 5v5
-                    .appendQueryParameter("endIndex", "25")   // start: 0 -- end: 2 --> only 2 games printed
+                    .appendQueryParameter("endIndex", "4")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
                     .appendQueryParameter("api_key", TEMP_API_KEY);
             URL rankedGameMatchURL = new URL(builder.build().toString());
             HttpsURLConnection rankedGameHistoryHttpsURLConnection = (HttpsURLConnection) rankedGameMatchURL.openConnection();

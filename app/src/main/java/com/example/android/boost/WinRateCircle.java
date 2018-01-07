@@ -1,11 +1,12 @@
 package com.example.android.boost;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
@@ -21,8 +22,8 @@ public class WinRateCircle extends View {
 
     private List<individualStrokeObject> strokeObjects;
 
-    private ArrayList<Long> mMatchArrayList;
-    private HashMap<Long, Boolean> mGameIdsAndWinLossMap;
+    private Paint paint;
+    private RectF rectF;
 
     private int centerPointX;
     private int centerPointY;
@@ -34,36 +35,37 @@ public class WinRateCircle extends View {
     public WinRateCircle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         strokeWidth = 30;   // TODO: Make these two responsive
-        innerCircleRadius = 200;
+        innerCircleRadius = 150;
 
-        QueryResultsScreen parentScreen = (QueryResultsScreen) context;
-       // QueryResultsScreen parentScreen = ((QueryResultsScreen) getActivity());
-//        QueryResultsScreen parentScreen = ((QueryResultsScreen)getContext());
-        mMatchArrayList = parentScreen.getmMatchArrayList();
-        mGameIdsAndWinLossMap  = parentScreen.getmGameIdsAndWinLossMap();
+        ArrayList<Long> mMatchArrayList = ConnectToServerTask.mMatchArrayList;
+        HashMap<Long, Boolean> mGameIdsAndWinLossMap = ConnectToServerTask.mGameIdsAndWinLossMap;
+
+        paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(strokeWidth);
+        paint.setColor(Color.RED);
 
         // initializing strokeObjects
         strokeObjects = new ArrayList<>();
-        if (mMatchArrayList == null) System.out.println("null");
+
         int numGames = mMatchArrayList.size();
-        float percent = 1/numGames;
+        float amountOfCircle = 360/numGames;
 
         Integer color;
-        int i = 1;
+        int i = 0;
         Iterator<Long> itr = mMatchArrayList.iterator();
         while(itr.hasNext()) {
             Long key = itr.next();
-            float startingPercent = 0 + (i*percent);
             // if won
             if (mGameIdsAndWinLossMap.get(key)) {
-                color = Color.parseColor("#09FF00");   // green
+                color = Color.parseColor("green");   // green
             } else {
-                color = Color.parseColor("FF0000");
+                color = Color.parseColor("red");    // red
             }
-            strokeObjects.add(new individualStrokeObject(startingPercent, percent, color));
+            strokeObjects.add(new individualStrokeObject(i, amountOfCircle, color));
             i++;
         }
-        System.out.println("end of ctor");
     }
 
     @Override
@@ -83,48 +85,24 @@ public class WinRateCircle extends View {
         }
     }
 
-    // used to dynamically set number of split up sections and number of colors needed
-    private void setStrokeObjects(List<individualStrokeObject> strokeObjects) {
-        this.strokeObjects = strokeObjects;
-    }
-
-    private Activity getActivity() {
-        Context context = getContext();
-        while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity)context;
-            }
-            context = ((ContextWrapper)context).getBaseContext();
-        }
-        return null;
-    }
-
     private class individualStrokeObject {
-        float percentToStartAt;
-        float percentOfCircle;
+        float amountToStartAt;
+        float amountCircle;
         Integer color;
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
 
-        public individualStrokeObject(float percentToStartAt, float percentOfCircle, Integer color) {
-            this.percentToStartAt = percentToStartAt;
-            this.percentOfCircle = percentOfCircle;
+        public individualStrokeObject(int index, float amount, Integer color) {
             this.color = color;
 
-            // changing percentOfCircle to usable values
-            if(this.percentOfCircle < 0 || this.percentOfCircle > 100){
-                this.percentOfCircle = 100; //Default to 100%
-            }
-            this.percentOfCircle = (float)((360 * (percentOfCircle + 0.1)) / 100);
+            // changing amount to usable values
+            this.amountCircle = amount;
 
-            // changing percentToStartAt to usable values
-            if(this.percentToStartAt < 0 || this.percentToStartAt > 100){
-                this.percentToStartAt = 0;
-            }
-            this.percentToStartAt = (float)((360 * (percentToStartAt - 0.1)) / 100) - 90;
+            this.amountToStartAt = (index * amount) + 270;
+
+            if (this.amountToStartAt >= 360) this.amountToStartAt -= 360;
 
             this.paint.setColor(color);   // parse before giving this
             paint.setAntiAlias(true);
-            paint.setDither(true);
             paint.setStyle(Paint.Style.STROKE);
         }
 
@@ -133,11 +111,13 @@ public class WinRateCircle extends View {
 
             int leftEdge = centerPointX - innerCircleRadius;
             int rightEdge = centerPointX + innerCircleRadius;
-            int topEdge = centerPointY + innerCircleRadius;
-            int bottomEdge = centerPointY - innerCircleRadius;
+            int topEdge = centerPointY - innerCircleRadius;
+            int bottomEdge = centerPointY + innerCircleRadius;
 
             RectF rectF = new RectF(leftEdge, topEdge, rightEdge, bottomEdge);
-            canvas.drawArc(rectF, percentToStartAt, percentOfCircle, false, paint);
+
+           // canvas.drawCircle(centerPointX, centerPointY, innerCircleRadius, paint);
+            canvas.drawArc(rectF, amountToStartAt, amountCircle, false, paint);
         }
     }
 }
