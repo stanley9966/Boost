@@ -81,12 +81,15 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
     @SuppressLint("UseSparseArrays")
     @Override
     protected Void doInBackground(String... strings) {
-        Log.d(TAG, "doInBackground: ");
         boolean debug = false;
         boolean debug2 = false;
         JSONObject mjsonObject;
 
         try {
+            // for the back button, resetting the static vars so that it doesn't keep track
+            if (mGameIdsAndWinLossMap != null) mGameIdsAndWinLossMap.clear();
+            if (mMatchArrayList != null) mMatchArrayList.clear();
+
             InputStream inputStream;
             URL summonerNameUrl = new URL(URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY);
             HttpsURLConnection summonerNameUrlConnection = (HttpsURLConnection) summonerNameUrl.openConnection();
@@ -103,9 +106,6 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
 
             // getting mS1accountID
             mS1AccountID = mjsonObject.getString("accountId");
-
-            // printing summoner1 ID
-            System.out.println(mS1AccountID);
 
             //constructing URL_Query for ranked game match history
             Uri.Builder builder = new Uri.Builder();
@@ -275,7 +275,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
      */
     @Override
     protected void onPostExecute(Void avoid) {
-        boolean debug = true;
+        boolean debug = false;
         if (debug) System.out.println("onPostExecute\n");
 
         super.onPostExecute(avoid);
