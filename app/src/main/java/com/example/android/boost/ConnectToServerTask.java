@@ -24,25 +24,27 @@ import javax.net.ssl.HttpsURLConnection;
 
 import static android.content.ContentValues.TAG;
 
-// TODO: Perform same queries on 2nd summoner
 public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
-
-    //URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY
-    private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-
-    private static final String TEMP_API_KEY = "RGAPI-567a6583-4dd6-445a-ab15-6e4d17f3a8df";
-
     private Activity mMainScreenActivity;
-    public static HashMap<Long, Boolean> mGameIdsAndWinLossMap;
-    public static ArrayList<Long> mMatchArrayList = new ArrayList<>();
+
+    // STATIC DATA
+    // final, TODO: change dynamically based on their input
+    private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
+    private static final String TEMP_API_KEY = "RGAPI-9321305e-c0f7-47f3-b2eb-3bd0157b5cf1";
+    private static final String SUMMONER_NAME = "Obstinate";
+    private static final String SECOND_SUMMONER_NAME = "Gooben";
+
+    // PACKAGE PROTECTED STATIC VARS so don't have to copy around everywhere
+    static HashMap<Long, Boolean> mGameIdsAndWinLossMap;
+    static ArrayList<Long> mMatchArrayList = new ArrayList<>();
+    static int numWins = 0;
+    static int numMatches = 0;
 
     // Data for Summoner1
-    private static final String SUMMONER_NAME = "Obstinate";
-    private String mS1AccountID;
+    static String mS1AccountID;
 
     // Data for Summoner2
-    private static final String SECOND_SUMMONER_NAME = "Gooben";
-    private String mS2AccountID;
+    static String mS2AccountID;
 
     /**
      * Constructor for the Asynctask, initializes the mMainScreenActivity, which is used to launch
@@ -236,6 +238,7 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
                 }
                 if (firstInFirstFive && won || !firstInFirstFive && !won) {
                     mGameIdsAndWinLossMap.put((Long)me.getKey(), true);
+                    numWins++;
                 }
             }
 
@@ -279,8 +282,10 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
         mMainScreenActivity.findViewById(R.id.connect_button).setVisibility(View.VISIBLE);
 
         // getting rid of the null values in mMatchArrayList and corresponding elements in the map
+        // setting the number of matches
         Iterator<Long> itr = mMatchArrayList.iterator();
         while(itr.hasNext()) {
+            numMatches++;
             Long key = itr.next();
             if (mGameIdsAndWinLossMap.get(key) == null) {
                 mGameIdsAndWinLossMap.remove(key);
@@ -290,8 +295,6 @@ public class ConnectToServerTask extends AsyncTask<String, Integer, Void> {
 
         // launch another activity... passing in that json
         Intent intent = new Intent(mMainScreenActivity.getApplicationContext(), QueryResultsScreen.class);
-        intent.putExtra("gameIdsAndWinLossMap", mGameIdsAndWinLossMap);
-        intent.putExtra("matchArrayList", mMatchArrayList);
         mMainScreenActivity.startActivity(intent);
     }
 

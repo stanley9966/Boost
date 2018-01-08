@@ -1,33 +1,21 @@
 package com.example.android.boost;
 
+import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
-
-    private ArrayList<Long> mData;
-    private HashMap<Long, Boolean> mMapData;
-
-    public Adapter(ArrayList<Long> arrayList, HashMap<Long, Boolean> map) {
-        mData = arrayList;
-        mMapData = map;
-    }
-
-    public ArrayList<Long> getmData() {
-        return mData;
-    }
+    Context context;
 
     // inner class ViewHolder
     public class AdapterViewHolder extends RecyclerView.ViewHolder {
+        CardView cardView;
         TextView winloss;
         TextView tempText;
 
@@ -35,6 +23,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
             super(v);
             tempText = v.findViewById(R.id.temp_text);
             winloss = v.findViewById(R.id.winloss);
+            cardView = v.findViewById(R.id.card_view);
         }
     }
 
@@ -42,6 +31,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     // creates cardview, creates a new viewholder and returns it
     @Override
     public AdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card, parent, false);
 
@@ -53,24 +43,31 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     // DON'T EVEN SHOW IF THE VALUE OF THE BOOLEAN IS NULL, MEANING THAT ONLY SUMMONER1 IS IN THAT GAME
     @Override
     public void onBindViewHolder(AdapterViewHolder holder, int position) {
-        Long matchKey = mData.get(position);
+        Long matchKey = ConnectToServerTask.mMatchArrayList.get(position);
         holder.tempText.setText(Long.toString(matchKey));
 
-
-        Boolean winLoss = mMapData.get(matchKey);
+        Boolean winLoss = ConnectToServerTask.mGameIdsAndWinLossMap.get(matchKey);
         if (winLoss == null) {
             holder.winloss.setText(".");
         } else if (winLoss) {
+            //cannot set individual view theme dynamically, can only do so with activities before onCreate
             holder.winloss.setText("W");
+            holder.cardView.setBackgroundColor(Color.GREEN);
+            //holder.cardView.setBackgroundColor(ContextCompat.getColor(context, R.color.lighterGreen));
+            holder.winloss.setTextColor(ContextCompat.getColor(context, R.color.darkerGreen));
+            holder.tempText.setTextColor(ContextCompat.getColor(context, R.color.darkerGreen));
         } else {
             holder.winloss.setText("L");
+            holder.cardView.setBackgroundColor(ContextCompat.getColor(context, R.color.lightBackgroundColorRed));
+            holder.winloss.setTextColor(ContextCompat.getColor(context, R.color.lightBackgroundColorTextRed));
+            holder.tempText.setTextColor(ContextCompat.getColor(context, R.color.lightBackgroundColorTextRed));
         }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mData.size();
+        return ConnectToServerTask.mMatchArrayList.size();
     }
 
 

@@ -1,15 +1,12 @@
 package com.example.android.boost;
 
-import android.app.Activity;
-import android.app.DownloadManager;
-import android.app.Fragment;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -23,6 +20,8 @@ public class WinRateCircle extends View {
     private List<individualStrokeObject> strokeObjects;
 
     private Paint paint;
+    private Paint textPaint;
+
     private RectF rectF;
 
     private int centerPointX;
@@ -44,7 +43,13 @@ public class WinRateCircle extends View {
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(strokeWidth);
-        paint.setColor(Color.RED);
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.GREEN);     // TODO: should be based on color scheme
+        textPaint.setStrokeWidth(1);         // TODO: RESPONSIVE
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setTextSize(75);
+        textPaint.setStyle(Paint.Style.FILL);
 
         // initializing strokeObjects
         strokeObjects = new ArrayList<>();
@@ -59,9 +64,9 @@ public class WinRateCircle extends View {
             Long key = itr.next();
             // if won
             if (mGameIdsAndWinLossMap.get(key)) {
-                color = Color.parseColor("green");   // green
+                color = Color.GREEN;   // green
             } else {
-                color = Color.parseColor("red");    // red
+                color = ContextCompat.getColor(getContext(), R.color.lightBackgroundColorRed);    // red
             }
             strokeObjects.add(new individualStrokeObject(i, amountOfCircle, color));
             i++;
@@ -77,6 +82,10 @@ public class WinRateCircle extends View {
         centerPointY = getHeight()/2;
 
         drawStrokes(canvas);
+        canvas.drawText(Integer.toString(ConnectToServerTask.numWins*100/ConnectToServerTask.numMatches) + "%",
+                centerPointX,
+                centerPointY+(textPaint.getTextSize()/2),
+                textPaint);
     }
 
     private void drawStrokes(Canvas canvas) {
@@ -114,7 +123,7 @@ public class WinRateCircle extends View {
             int topEdge = centerPointY - innerCircleRadius;
             int bottomEdge = centerPointY + innerCircleRadius;
 
-            RectF rectF = new RectF(leftEdge, topEdge, rightEdge, bottomEdge);
+            rectF = new RectF(leftEdge, topEdge, rightEdge, bottomEdge);
 
            // canvas.drawCircle(centerPointX, centerPointY, innerCircleRadius, paint);
             canvas.drawArc(rectF, amountToStartAt, amountCircle, false, paint);

@@ -3,4 +3,22 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="darkerGreen">#2C6700</color>
+    <color name="lighterGreen">#92CD00</color>
+    <color name="evenLighterGreen">#CDDC39</color>
+    <color name="complementGreen">#FFCF79</color>
+    <color name="lighterComplementGreen">#E5E4D7</color>
+
+
+
+    <color name="darkBackgroundColorRed">#D32F2F</color>
+
+    <color name="lightBackgroundColorRed">#F44336</color>
+    <color name="lightBackgroundColorTextRed">#FFFFFF</color>
+    <color name="greyAccentColorRed">#607D8B</color>
+    <color name="secondaryTextColorRed">#212121</color>
+
+    <color name="dividerColor">#BDBDBD</color>
+
 </resources>

@@ -47,21 +47,10 @@ public class QueryResultsScreen extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mMatchArrayList = (ArrayList<Long>) getIntent().getSerializableExtra("matchArrayList");
-        mGameIdsAndWinLossMap = (HashMap<Long, Boolean>) getIntent().getSerializableExtra("gameIdsAndWinLossMap");
-
-        mAdapter = new Adapter(mMatchArrayList, mGameIdsAndWinLossMap);
+        mAdapter = new Adapter();
         mRecyclerView.setAdapter(mAdapter);
 
         // adds back button in action bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    public ArrayList<Long> getmMatchArrayList() {
-        return mMatchArrayList;
-    }
-
-    public HashMap<Long, Boolean> getmGameIdsAndWinLossMap() {
-        return mGameIdsAndWinLossMap;
     }
 }

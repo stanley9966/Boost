@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="WinColorTheme" parent="AppTheme">
+        <item name="android:background">@color/lighterGreen</item>
+        <item name="android:textColor">@color/darkerGreen</item>
+
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <!-- Maybe make theme for red, although if only using for cardview it's unnecessary -->
+
 </resources>
