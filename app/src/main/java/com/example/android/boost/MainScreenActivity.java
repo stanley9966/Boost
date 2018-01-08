@@ -7,7 +7,11 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +27,10 @@ import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class MainScreenActivity extends AppCompatActivity {
+public class MainScreenActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    // Things on Screen
+    private Spinner spinner;
 
     // STATIC DATA
     // final, TODO: change dynamically based on their input
@@ -53,6 +60,13 @@ public class MainScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
+        spinner = findViewById(R.id.servers);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.servers_array,
+                android.R.layout.simple_spinner_item);    // using default simple spinner item
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
         //creates button
         Button connectButton = findViewById(R.id.connect_button);
         connectButton.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +80,22 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    // FOR SPINNER
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+        Toast.makeText(parent.getContext(),
+                "OnItemSelectedListener : " + parent.getItemAtPosition(i).toString(),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    // for spinner
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
     private class ConnectServerTask extends AsyncTask<String, Integer, Void> {
         /**
          * hides the button in mainScreenActivity

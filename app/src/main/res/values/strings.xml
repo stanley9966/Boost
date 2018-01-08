@@ -3,4 +3,23 @@
     <string name="compare_button">Compare</string>
     <string name="mainScreen">MainScreen</string>
     <string name="results">Results</string>
+    <string name="summoner_1">Summoner 1</string>
+    <string name="summoner_2">Summoner 2</string>
+
+    <string-array name="servers_array">
+        <item>BR</item>
+        <item>EUNE</item>
+        <item>EUW</item>
+        <item>LAN</item>
+        <item>LAS</item>
+        <item>NA</item>
+        <item>OCE</item>
+        <item>RU</item>
+        <item>TR</item>
+        <item>JP</item>
+        <item>SEA</item>
+        <item>KR</item>
+        <item>CN</item>
+    </string-array>
+
 </resources>
