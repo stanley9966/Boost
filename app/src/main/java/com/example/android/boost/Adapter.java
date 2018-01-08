@@ -43,10 +43,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     // DON'T EVEN SHOW IF THE VALUE OF THE BOOLEAN IS NULL, MEANING THAT ONLY SUMMONER1 IS IN THAT GAME
     @Override
     public void onBindViewHolder(AdapterViewHolder holder, int position) {
-        Long matchKey = ConnectToServerTask.mMatchArrayList.get(position);
+        Long matchKey = MainScreenActivity.mMatchArrayList.get(position);
         holder.tempText.setText(Long.toString(matchKey));
 
-        Boolean winLoss = ConnectToServerTask.mGameIdsAndWinLossMap.get(matchKey);
+        Boolean winLoss = MainScreenActivity.mGameIdsAndWinLossMap.get(matchKey);
         if (winLoss == null) {
             holder.winloss.setText(".");
         } else if (winLoss) {
@@ -67,7 +67,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return ConnectToServerTask.mMatchArrayList.size();
+        return MainScreenActivity.mMatchArrayList.size();
     }
 
 

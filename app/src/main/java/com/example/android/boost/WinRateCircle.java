@@ -36,8 +36,8 @@ public class WinRateCircle extends View {
         strokeWidth = 30;   // TODO: Make these two responsive
         innerCircleRadius = 150;
 
-        ArrayList<Long> mMatchArrayList = ConnectToServerTask.mMatchArrayList;
-        HashMap<Long, Boolean> mGameIdsAndWinLossMap = ConnectToServerTask.mGameIdsAndWinLossMap;
+        ArrayList<Long> mMatchArrayList = MainScreenActivity.mMatchArrayList;
+        HashMap<Long, Boolean> mGameIdsAndWinLossMap = MainScreenActivity.mGameIdsAndWinLossMap;
 
         paint = new Paint();
         paint.setAntiAlias(true);
@@ -82,7 +82,7 @@ public class WinRateCircle extends View {
         centerPointY = getHeight()/2;
 
         drawStrokes(canvas);
-        canvas.drawText(Integer.toString(ConnectToServerTask.numWins*100/ConnectToServerTask.numMatches) + "%",
+        canvas.drawText(Integer.toString(MainScreenActivity.numWins*100/MainScreenActivity.numMatches) + "%",
                 centerPointX,
                 centerPointY+(textPaint.getTextSize()/2),
                 textPaint);
