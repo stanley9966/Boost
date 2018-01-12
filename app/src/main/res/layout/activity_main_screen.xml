@@ -33,9 +33,12 @@
         android:text="@string/compare_button" />
 
     <ProgressBar
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:theme="@style/Theme.Transparent"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
+        android:background="@color/semiTransparent"
+
+
         android:id="@+id/progressBar"
         android:indeterminate="true"
         android:progressDrawable="@drawable/circular_spinner"

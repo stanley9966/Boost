@@ -21,4 +21,6 @@
 
     <color name="dividerColor">#BDBDBD</color>
 
+    <color name="semiTransparent">#80FFFFFF</color>
+
 </resources>
