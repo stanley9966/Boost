@@ -5,6 +5,7 @@
     <string name="results">Results</string>
     <string name="summoner_1">Summoner 1</string>
     <string name="summoner_2">Summoner 2</string>
+    <string name="dataSet">dataSet</string>
 
     <string-array name="servers_array">
         <item>BR</item>

@@ -1,15 +1,20 @@
 package com.example.android.boost;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,13 +22,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -31,17 +40,20 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
 
     // Things on Screen
     private Spinner spinner;
+    private AutoCompleteTextView summ1Tv;
+    private AutoCompleteTextView summ2Tv;
 
     // STATIC DATA
     // final, TODO: change dynamically based on their input
+    private static final String dataSet = "dataSet";
     private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String TEMP_API_KEY = "RGAPI-9321305e-c0f7-47f3-b2eb-3bd0157b5cf1";
-    private static final String SUMMONER_NAME = "Obstinate";
-    private static final String SECOND_SUMMONER_NAME = "Gooben";
+    private static final String TEMP_API_KEY = "RGAPI-d34a8932-0d70-4324-8479-4763f049a994";
+    private static String SUMMONER_NAME;
+    private static String SECOND_SUMMONER_NAME;
 
     // PACKAGE PROTECTED STATIC VARS so don't have to copy around everywhere
     static HashMap<Long, Boolean> mGameIdsAndWinLossMap;
-    static ArrayList<Long> mMatchArrayList = new ArrayList<>();
+    static ArrayList<Long> mMatchArrayList;
     static int numWins = 0;
     static int numMatches = 0;
 
@@ -60,6 +72,9 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
+        summ1Tv = findViewById(R.id.summoner_1_autocomplete);
+        summ2Tv = findViewById(R.id.summoner_2_autocomplete);
+
         spinner = findViewById(R.id.servers);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.servers_array,
                 android.R.layout.simple_spinner_item);    // using default simple spinner item
@@ -73,7 +88,34 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onClick(View view) {
                 try {
-                    new ConnectServerTask().execute();
+                    SUMMONER_NAME = summ1Tv.getText().toString();
+                    SECOND_SUMMONER_NAME = summ2Tv.getText().toString();
+
+                    if (SUMMONER_NAME.equals("") || SECOND_SUMMONER_NAME.equals("")) {
+                        throw new NoSummonerException();
+                    } else {
+                        // connect
+                        new ConnectServerTask().execute();
+
+                        // remember recent searches
+                        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                        // adding defaultSet in case there is no savedSet yet
+                        Set<String> defaultSet = new HashSet<>();
+                        Set<String> savedSet = sharedPreferences.getStringSet(dataSet,
+                                defaultSet);
+                        savedSet.add(summ1Tv.getText().toString());
+                        savedSet.add(summ2Tv.getText().toString());
+                        editor.putStringSet(dataSet, savedSet);
+                        editor.apply();
+
+                        //summ2Tv.setText("");
+                        //summ1Tv.setText("");
+                    }
+                } catch (NoSummonerException e){
+                    Toast.makeText(MainScreenActivity.this, "Please input 2 summoners!",
+                            Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -81,6 +123,29 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+
+        // null there is the default value, if constructing for the first time
+        Set<String> set = sharedPreferences.getStringSet(dataSet, null);
+
+        ArrayAdapter<String> adapter;
+        if (set != null) {
+            String[] setArray = set.toArray(new String[set.size()]);
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.select_dialog_item, setArray);
+        } else {
+            adapter = new ArrayAdapter<String>(this,
+                    android.R.layout.select_dialog_item, new String[]{});
+        }
+        summ1Tv.setAdapter(adapter);
+        summ2Tv.setAdapter(adapter);
+        summ1Tv.setThreshold(1);    // starts as soon as 1 character typed
+        summ2Tv.setThreshold(1);
+    }
 
     // FOR SPINNER
     @Override
@@ -97,6 +162,10 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
     }
 
     private class ConnectServerTask extends AsyncTask<String, Integer, Void> {
+
+        boolean secondEverAppears = false;
+        boolean failed = false;
+
         /**
          * hides the button in mainScreenActivity
          */
@@ -134,13 +203,12 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 URL summonerNameUrl = new URL(URL_QUERY + SUMMONER_NAME + "?api_key=" + TEMP_API_KEY);
                 HttpsURLConnection summonerNameUrlConnection = (HttpsURLConnection) summonerNameUrl.openConnection();
                 summonerNameUrlConnection.connect();
-
-                int responseCode = summonerNameUrlConnection.getResponseCode();
+                //String responseCode = Integer.toString(summonerNameUrlConnection.getResponseCode());
 
                 // prints out summoner name query
+                // error handled
                 inputStream = new BufferedInputStream(summonerNameUrlConnection.getInputStream());
                 String json = convertStreamToString(inputStream);
-                if (debug) System.out.println(json);
 
                 mjsonObject = new JSONObject(json);
 
@@ -165,12 +233,16 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 rankedGameHistoryHttpsURLConnection.connect();
 
                 //print match history
+                // handles case where summoner not yet lvl 30
                 inputStream = new BufferedInputStream(rankedGameHistoryHttpsURLConnection.getInputStream());
                 json = convertStreamToString(inputStream);
-                if (debug) System.out.println(json);
 
                 // creating and filling the gameIdsandWinLossMap with gameId and defaults to a loss
                 mGameIdsAndWinLossMap = new HashMap<>();
+                mMatchArrayList = new ArrayList<>();
+                numWins = 0;
+                numMatches = 0;
+
                 JSONObject jsonObject = new JSONObject(json);
                 JSONArray jsonArray = jsonObject.getJSONArray("matches");
 
@@ -184,6 +256,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 }
 
                 // prints out contents of gameIds...map
+
                 if (debug2) {
                     System.out.println("original");
                     Set set = mGameIdsAndWinLossMap.entrySet();
@@ -212,7 +285,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                             .appendPath("match")
                             .appendPath("v3")
                             .appendPath("matches")
-                            .appendPath(Long.toString((Long) me.getKey()))  // MIGHT NOT BE RIGHT
+                            .appendPath(Long.toString((Long) me.getKey()))
                             .appendQueryParameter("api_key", TEMP_API_KEY);
                     matchIdURL = new URL(builder2.build().toString());
                     matchIdHttpsURLConnection = (HttpsURLConnection) matchIdURL.openConnection();
@@ -236,6 +309,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
 
                         // checking for 2nd summoner and finding out if within first 5
                         if (summonerName.equals(SECOND_SUMMONER_NAME)) {
+                            secondEverAppears = true;
                             hasSecond = true;
                             if (i < 5) {
                                 secondInFirstFive = true;
@@ -286,9 +360,10 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 rankedGameHistoryHttpsURLConnection.disconnect();
                 return null;
 
+            } catch(FileNotFoundException e) {
+                failed = true;
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
             return null;
         }
@@ -316,26 +391,37 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         @Override
         protected void onPostExecute(Void avoid) {
             boolean debug = false;
-            if (debug) System.out.println("onPostExecute\n");
+            if (debug) System.out.println("onPostExecute");
 
             super.onPostExecute(avoid);
             MainScreenActivity.this.findViewById(R.id.connect_button).setVisibility(View.VISIBLE);
-
-            // getting rid of the null values in mMatchArrayList and corresponding elements in the map
-            // setting the number of matches
-            Iterator<Long> itr = mMatchArrayList.iterator();
-            while(itr.hasNext()) {
-                numMatches++;
-                Long key = itr.next();
-                if (mGameIdsAndWinLossMap.get(key) == null) {
-                    mGameIdsAndWinLossMap.remove(key);
-                    itr.remove();
+            if (!failed) {
+                if (secondEverAppears) {
+                    // getting rid of the null values in mMatchArrayList and corresponding elements in the map
+                    // setting the number of matches
+                    Iterator<Long> itr = mMatchArrayList.iterator();
+                    while (itr.hasNext()) {
+                        numMatches++;
+                        Long key = itr.next();
+                        if (mGameIdsAndWinLossMap.get(key) == null) {
+                            mGameIdsAndWinLossMap.remove(key);
+                            numMatches--;
+                            itr.remove();
+                        }
+                    }
+                    // launch another activity... passing in that json
+                    Intent intent = new Intent(MainScreenActivity.this.getBaseContext(), QueryResultsScreen.class);
+                    MainScreenActivity.this.startActivity(intent);
+                } else {
+                    Toast toast = Toast.makeText(MainScreenActivity.this, "Summoners have not played together recently!",
+                            Toast.LENGTH_LONG);
+                    toast.show();
                 }
+            } else {
+                Toast toast = Toast.makeText(MainScreenActivity.this, "Summoner1 does not have any ranked games played!",
+                        Toast.LENGTH_LONG);
+                toast.show();
             }
-
-            // launch another activity... passing in that json
-            Intent intent = new Intent(MainScreenActivity.this.getBaseContext(), QueryResultsScreen.class);
-            MainScreenActivity.this.startActivity(intent);
         }
 
         /**

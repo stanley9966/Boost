@@ -82,6 +82,7 @@ public class WinRateCircle extends View {
         centerPointY = getHeight()/2;
 
         drawStrokes(canvas);
+        System.out.println(Integer.toString(MainScreenActivity.numWins*100/MainScreenActivity.numMatches));
         canvas.drawText(Integer.toString(MainScreenActivity.numWins*100/MainScreenActivity.numMatches) + "%",
                 centerPointX,
                 centerPointY+(textPaint.getTextSize()/2),

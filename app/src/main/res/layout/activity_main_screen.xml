@@ -8,17 +8,17 @@
     tools:context="com.example.android.boost.MainScreenActivity">
 
 
-    <EditText
-        android:id="@+id/summoner_1_edit_text"
+    <AutoCompleteTextView
+        android:id="@+id/summoner_1_autocomplete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/summoner_1" />
+        android:ems="7"/>
 
-    <EditText
-        android:id="@+id/summoner_2_edit_text"
+    <AutoCompleteTextView
+        android:id="@+id/summoner_2_autocomplete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/summoner_2" />
+        android:ems="7"/>
 
     <Spinner
         android:id="@+id/servers"
