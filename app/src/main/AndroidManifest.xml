@@ -5,13 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/backup_descriptor">
-
-        <activity android:name=".MainScreenActivity"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainScreenActivity"
             android:label="@string/mainScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,10 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".QueryResultsScreen"
-            android:label="@string/results">
-
-        </activity>
+        <activity
+            android:name=".QueryResultsScreen"
+            android:label="@string/results"></activity>
+        <activity android:name=".ProgressBar"></activity>
     </application>
+
 </manifest>

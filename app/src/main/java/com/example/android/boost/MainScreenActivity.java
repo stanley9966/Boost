@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
     private Spinner spinner;
     private AutoCompleteTextView summ1Tv;
     private AutoCompleteTextView summ2Tv;
+    private ProgressBar progressBar;
 
     // STATIC DATA
     // final, TODO: change dynamically based on their input
@@ -172,7 +174,8 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            MainScreenActivity.this.findViewById(R.id.connect_button).setVisibility(View.INVISIBLE);
+            progressBar = findViewById(R.id.progressBar);
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         /**
@@ -376,11 +379,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-
         }
-
-        // hide the progress bar
-        // launches another activity, passing the required information over..
 
         /**
          * Sets the visibility of the button to VISIBLE, and launches QueryResultsScreen through
@@ -394,7 +393,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             if (debug) System.out.println("onPostExecute");
 
             super.onPostExecute(avoid);
-            MainScreenActivity.this.findViewById(R.id.connect_button).setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
             if (!failed) {
                 if (secondEverAppears) {
                     // getting rid of the null values in mMatchArrayList and corresponding elements in the map
