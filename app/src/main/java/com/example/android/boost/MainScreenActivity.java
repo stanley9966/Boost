@@ -170,7 +170,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar = findViewById(R.id.progressBar);
+            progressBar = findViewById(R.id.ProgressBar);
             progressBar.setVisibility(View.VISIBLE);
         }
 
@@ -367,16 +367,6 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             return null;
         }
 
-
-        /**
-         *
-         * @param values // TODO:
-         */
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-        }
-
         /**
          * Sets the visibility of the button to VISIBLE, and launches QueryResultsScreen through
          * explicit intent, passing in extra data mGameIdsAndWinLossMap and mMatchArrayList
@@ -389,7 +379,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             if (debug) System.out.println("onPostExecute");
 
             super.onPostExecute(avoid);
-            progressBar.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.GONE);
             if (!failed) {
                 if (secondEverAppears) {
                     // getting rid of the null values in mMatchArrayList and corresponding elements in the map

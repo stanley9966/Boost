@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context="com.example.android.boost.MainScreenActivity">
 
+    <ProgressBar
+        android:id="@+id/ProgressBar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        android:layout_marginTop="-8dp"
+        android:visibility="gone"/>
 
     <AutoCompleteTextView
         android:id="@+id/summoner_1_autocomplete"
@@ -31,18 +39,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/compare_button" />
-
-    <ProgressBar
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-
-        android:background="@color/semiTransparent"
-
-
-        android:id="@+id/progressBar"
-        android:indeterminate="true"
-        android:progressDrawable="@drawable/circular_spinner"
-        android:layout_gravity="center"
-        android:visibility="invisible"/>
 
 </LinearLayout>
