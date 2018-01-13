@@ -6,6 +6,11 @@
     <string name="summoner_1">Summoner 1</string>
     <string name="summoner_2">Summoner 2</string>
     <string name="dataSet">dataSet</string>
+    <string name="back_home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="stanley_zhang_s_app">Stanley Zhang\'s App!</string>
+    <string name="navigation_drawer_open">Drawer Open</string>
+    <string name="navigation_drawer_close">Drawer Closed</string>
 
     <string-array name="servers_array">
         <item>BR</item>

@@ -6,8 +6,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,12 +45,15 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
     private AutoCompleteTextView summ1Tv;
     private AutoCompleteTextView summ2Tv;
     private ProgressBar progressBar;
+    private NavigationView navigationView;
+    private DrawerLayout mdrawerLayout;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
 
     // STATIC DATA
     // final, TODO: change dynamically based on their input
     private static final String dataSet = "dataSet";
     private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String TEMP_API_KEY = "RGAPI-d34a8932-0d70-4324-8479-4763f049a994";
+    private static final String TEMP_API_KEY = "RGAPI-dc4ed6ee-c6c9-4edb-8437-26029a949165";
     private static String SUMMONER_NAME;
     private static String SECOND_SUMMONER_NAME;
 
@@ -61,6 +69,14 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
     // Data for Summoner2
     static String mS2AccountID;
 
+
+    // called when clicking the hamburger
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        mActionBarDrawerToggle.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
+    }
+
     /**
      * creates the mainScreenAcitivity, creates the button and links it
      * @param savedInstanceState performs the query to riot api
@@ -69,6 +85,48 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+
+        // setting up navigationdrawer, item selected listener and drawerLayout
+        navigationView = findViewById(R.id.navigation);
+        mdrawerLayout = findViewById(R.id.drawer_layout);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mdrawerLayout,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close) {
+
+
+            // changing the titles
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle("Settings");
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                getSupportActionBar().setTitle("MainScreen");
+            }
+        };
+
+
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        mdrawerLayout.closeDrawers();      // just closing the drawers right now
+                        return true;
+                    }
+                }
+        );
+        // setting the drawer toggle as the listener
+        mdrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        mActionBarDrawerToggle.syncState();
 
         summ1Tv = findViewById(R.id.summoner_1_autocomplete);
         summ2Tv = findViewById(R.id.summoner_2_autocomplete);
