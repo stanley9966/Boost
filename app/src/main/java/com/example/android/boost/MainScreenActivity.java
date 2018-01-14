@@ -12,14 +12,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -64,6 +63,7 @@ public class MainScreenActivity extends AppCompatActivity {
     static ArrayList<Long> mMatchArrayList;
     static int numWins = 0;
     static int numMatches = 0;
+    static ArrayList<Info> infoArrayList;
 
     // Data for Summoner1
     static String mS1AccountID;
@@ -216,7 +216,6 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
     private class ConnectServerTask extends AsyncTask<String, Integer, Void> {
-
         boolean secondEverAppears = false;
         boolean failed = false;
 
@@ -281,7 +280,7 @@ public class MainScreenActivity extends AppCompatActivity {
                         .appendPath("by-account")
                         .appendPath(mS1AccountID)
                         .appendQueryParameter("queue", "420")   // 420 is solo/duo ranked 5v5
-                        .appendQueryParameter("endIndex", "4")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
+                        .appendQueryParameter("endIndex", "10")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
                         .appendQueryParameter("api_key", TEMP_API_KEY);
                 URL rankedGameMatchURL = new URL(builder.build().toString());
                 HttpsURLConnection rankedGameHistoryHttpsURLConnection = (HttpsURLConnection) rankedGameMatchURL.openConnection();
@@ -331,7 +330,8 @@ public class MainScreenActivity extends AppCompatActivity {
                 URL matchIdURL;
                 HttpsURLConnection matchIdHttpsURLConnection;
 
-                while (keyIterator.hasNext()) {
+                infoArrayList = new ArrayList<>();
+                for (int k = 0; k < mMatchArrayList.size(); k++) {
                     Map.Entry me = (Map.Entry) keyIterator.next();
                     Uri.Builder builder2 = new Uri.Builder();
                     builder2.scheme("https")
@@ -340,7 +340,7 @@ public class MainScreenActivity extends AppCompatActivity {
                             .appendPath("match")
                             .appendPath("v3")
                             .appendPath("matches")
-                            .appendPath(Long.toString((Long) me.getKey()))
+                            .appendPath(Long.toString(mMatchArrayList.get(k)))
                             .appendQueryParameter("api_key", TEMP_API_KEY);
                     matchIdURL = new URL(builder2.build().toString());
                     matchIdHttpsURLConnection = (HttpsURLConnection) matchIdURL.openConnection();
@@ -350,12 +350,27 @@ public class MainScreenActivity extends AppCompatActivity {
                     inputStream = new BufferedInputStream(matchIdHttpsURLConnection.getInputStream());
                     json = convertStreamToString(inputStream);
                     JSONObject matchJsonObject = new JSONObject(json);
+
                     JSONArray participantIdentities = matchJsonObject.getJSONArray("participantIdentities");
 
                     boolean firstInFirstFive = false;
                     boolean secondInFirstFive = false;
                     boolean hasSecond = false;
                     boolean sameTeam = false;
+
+                    int summoner1Index = 0;
+                    int summoner2Index = 0;
+
+                    for (int i = 0; i < 10; i++) {
+                        JSONObject playerAndId = participantIdentities.getJSONObject(i);
+                        JSONObject player = playerAndId.getJSONObject("player");
+                        String summonerName = player.getString("summonerName");
+                        if (summonerName.equals(SUMMONER_NAME)) {
+                            summoner1Index = i;
+                        } else if (summonerName.equals(SECOND_SUMMONER_NAME)) {
+                            summoner2Index = i;
+                        }
+                    }
 
                     for (int i = 0; i < 10; i++) {
                         JSONObject playerAndId = participantIdentities.getJSONObject(i);
@@ -409,6 +424,31 @@ public class MainScreenActivity extends AppCompatActivity {
                         mGameIdsAndWinLossMap.put((Long) me.getKey(), true);
                         numWins++;
                     }
+
+                    // getting the info for both players wanted ---
+                    JSONArray participant = matchJsonObject.getJSONArray("participants");
+
+                    JSONObject participant1 = participant.getJSONObject(summoner1Index);
+                    int championId = participant1.getInt("championId");
+                    int spell1Id = participant1.getInt("spell1Id");
+                    int spell2Id = participant1.getInt("spell2Id");
+                    JSONObject stats = participant1.getJSONObject("stats");
+                    int kills = stats.getInt("kills");
+                    int deaths = stats.getInt("deaths");
+                    int assists = stats.getInt("assists");
+                    int totalDamageDealt = stats.getInt("totalDamageDealtToChampions");
+                    infoArrayList.add(new Info(championId, spell1Id, spell2Id, kills, deaths, assists, totalDamageDealt));
+
+                    JSONObject participant2 = participant.getJSONObject(summoner2Index);
+                    championId = participant2.getInt("championId");
+                    spell1Id = participant2.getInt("spell1Id");
+                    spell2Id = participant2.getInt("spell2Id");
+                    stats = participant2.getJSONObject("stats");
+                    kills = stats.getInt("kills");
+                    deaths = stats.getInt("deaths");
+                    assists = stats.getInt("assists");
+                    totalDamageDealt = stats.getInt("totalDamageDealtToChampions");
+                    infoArrayList.add(new Info(championId, spell1Id, spell2Id, kills, deaths, assists, totalDamageDealt));
                 }
 
                 summonerNameUrlConnection.disconnect();
@@ -477,6 +517,27 @@ public class MainScreenActivity extends AppCompatActivity {
             } catch (java.util.NoSuchElementException e) {
                 return "";
             }
+        }
+    }
+
+    // to pass the info achieved when querying
+    public class Info {
+        int championId;
+        int spell1Id;
+        int spell2Id;
+        int kills;
+        int deaths;
+        int assists;
+        int totalDamageDealt;
+
+        public Info(int championId, int spell1Id, int spell2Id, int kills, int deaths, int assists, int totalDamageDealt) {
+            this.championId = championId;
+            this.spell1Id = spell1Id;
+            this.spell2Id = spell2Id;
+            this.kills = kills;
+            this.deaths = deaths;
+            this.assists = assists;
+            this.totalDamageDealt = totalDamageDealt;
         }
     }
 
