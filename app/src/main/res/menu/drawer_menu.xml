@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <!-- add icons for both -->
     <item
         android:id="@+id/navigate_home"
-        android:title="@string/back_home" />
+        android:title="@string/back_home"
+        android:icon="@drawable/ic_home"/>
 
     <item
         android:id="@+id/settings"
-        android:title="@string/settings"/>
+        android:title="@string/settings"
+        android:icon="@drawable/ic_settings" >
+        <menu>
+            <item
+                android:id="@+id/region_setting"
+                android:title="@string/region"
+                android:icon="@drawable/ic_region"/>
+            <item
+                android:id="@+id/color_scheme_setting"
+                android:title="@string/color_scheme_setting"
+                android:icon="@drawable/ic_color_scheme"/>
+        </menu>
+
+
+    </item>
 
 </menu>

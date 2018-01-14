@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- using list preference for now, switch when know what color schemes I want to use and have them made -->
+    <ListPreference
+        android:key="list_preference_key"
+        android:title="list_preference_title"
+        android:summary="list_preference_summary"
+        android:entries="@array/servers_array"
+        android:entryValues="@array/servers_array"
+        android:dialogTitle="list_preference_dialogTitle"/>
+
+</PreferenceScreen>

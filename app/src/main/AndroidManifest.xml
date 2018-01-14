@@ -12,7 +12,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainScreenActivity"
-            android:label="@string/mainScreen">
+            android:label="@string/mainScreen"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,8 +22,12 @@
         </activity>
         <activity
             android:name=".QueryResultsScreen"
-            android:label="@string/results"></activity>
-        <activity android:name=".ProgressBar"></activity>
+            android:label="@string/results" />
+        <activity
+            android:name=".Settings"
+            android:label="@string/title_activity_color_settings">
+        </activity>
+
     </application>
 
 </manifest>

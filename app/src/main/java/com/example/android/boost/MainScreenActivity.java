@@ -39,15 +39,18 @@ import java.util.Set;
 import javax.net.ssl.HttpsURLConnection;
 
 public class MainScreenActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private static final String TAG = MainScreenActivity.class.toString();
 
     // Things on Screen
-    private Spinner spinner;
-    private AutoCompleteTextView summ1Tv;
-    private AutoCompleteTextView summ2Tv;
-    private ProgressBar progressBar;
-    private NavigationView navigationView;
-    private DrawerLayout mdrawerLayout;
+    private Spinner mSpinner;
+    private AutoCompleteTextView mSumm1Tv;
+    private AutoCompleteTextView mSumm2Tv;
+    private ProgressBar mProgressBar;
+    private NavigationView mNavigationView;
+    private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
+//    private Class mFragmentClass = null;
+//    private android.support.v4.app.Fragment mFragment = null;
 
     // STATIC DATA
     // final, TODO: change dynamically based on their input
@@ -79,6 +82,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
 
     /**
      * creates the mainScreenAcitivity, creates the button and links it
+     *
      * @param savedInstanceState performs the query to riot api
      */
     @Override
@@ -87,11 +91,11 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         setContentView(R.layout.activity_main_screen);
 
         // setting up navigationdrawer, item selected listener and drawerLayout
-        navigationView = findViewById(R.id.navigation);
-        mdrawerLayout = findViewById(R.id.drawer_layout);
+        mNavigationView = findViewById(R.id.navigation);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
-                mdrawerLayout,
+                mDrawerLayout,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close) {
 
@@ -110,33 +114,49 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             }
         };
 
-
-        navigationView.setNavigationItemSelectedListener(
+        // listener for the navigation drawer
+        mNavigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        mdrawerLayout.closeDrawers();      // just closing the drawers right now
+                        // already 3.0 and higher right now so using PreferenceFragment
+                        // clicked color scheme
+                        switch (item.getItemId()) {
+                            // 0 for color
+                            case R.id.color_scheme_setting:
+                                Intent intent = new Intent(MainScreenActivity.this.getBaseContext(), Settings.class);
+                                intent.putExtra("type", 0);
+                                MainScreenActivity.this.startActivity(intent);
+                                break;
+                            // 1 for region
+                            case R.id.region_setting:
+                                Intent intent2 = new Intent(MainScreenActivity.this.getBaseContext(), Settings.class);
+                                intent2.putExtra("type", 1);
+                                MainScreenActivity.this.startActivity(intent2);
+                                break;
+                        }
+                        mDrawerLayout.closeDrawers();    // close drawer after load new fragment
                         return true;
                     }
                 }
         );
         // setting the drawer toggle as the listener
-        mdrawerLayout.addDrawerListener(mActionBarDrawerToggle);
+        mDrawerLayout.addDrawerListener(mActionBarDrawerToggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);   // add the hamburger and arrow icon
         getSupportActionBar().setHomeButtonEnabled(true);
 
         mActionBarDrawerToggle.syncState();
 
-        summ1Tv = findViewById(R.id.summoner_1_autocomplete);
-        summ2Tv = findViewById(R.id.summoner_2_autocomplete);
+        mSumm1Tv = findViewById(R.id.summoner_1_autocomplete);
+        mSumm2Tv = findViewById(R.id.summoner_2_autocomplete);
 
-        spinner = findViewById(R.id.servers);
+        mSpinner = findViewById(R.id.servers);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.servers_array,
-                android.R.layout.simple_spinner_item);    // using default simple spinner item
+                android.R.layout.simple_spinner_item);    // using default simple mSpinner item
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(this);
 
         //creates button
         Button connectButton = findViewById(R.id.connect_button);
@@ -144,8 +164,8 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onClick(View view) {
                 try {
-                    SUMMONER_NAME = summ1Tv.getText().toString();
-                    SECOND_SUMMONER_NAME = summ2Tv.getText().toString();
+                    SUMMONER_NAME = mSumm1Tv.getText().toString();
+                    SECOND_SUMMONER_NAME = mSumm2Tv.getText().toString();
 
                     if (SUMMONER_NAME.equals("") || SECOND_SUMMONER_NAME.equals("")) {
                         throw new NoSummonerException();
@@ -161,15 +181,15 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                         Set<String> defaultSet = new HashSet<>();
                         Set<String> savedSet = sharedPreferences.getStringSet(dataSet,
                                 defaultSet);
-                        savedSet.add(summ1Tv.getText().toString());
-                        savedSet.add(summ2Tv.getText().toString());
+                        savedSet.add(mSumm1Tv.getText().toString());
+                        savedSet.add(mSumm2Tv.getText().toString());
                         editor.putStringSet(dataSet, savedSet);
                         editor.apply();
 
-                        //summ2Tv.setText("");
-                        //summ1Tv.setText("");
+                        //mSumm2Tv.setText("");
+                        //mSumm1Tv.setText("");
                     }
-                } catch (NoSummonerException e){
+                } catch (NoSummonerException e) {
                     Toast.makeText(MainScreenActivity.this, "Please input 2 summoners!",
                             Toast.LENGTH_LONG).show();
                 } catch (Exception e) {
@@ -197,10 +217,10 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             adapter = new ArrayAdapter<String>(this,
                     android.R.layout.select_dialog_item, new String[]{});
         }
-        summ1Tv.setAdapter(adapter);
-        summ2Tv.setAdapter(adapter);
-        summ1Tv.setThreshold(1);    // starts as soon as 1 character typed
-        summ2Tv.setThreshold(1);
+        mSumm1Tv.setAdapter(adapter);
+        mSumm2Tv.setAdapter(adapter);
+        mSumm1Tv.setThreshold(1);    // starts as soon as 1 character typed
+        mSumm2Tv.setThreshold(1);
     }
 
     // FOR SPINNER
@@ -211,7 +231,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 Toast.LENGTH_SHORT).show();
     }
 
-    // for spinner
+    // for mSpinner
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -228,8 +248,8 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressBar = findViewById(R.id.ProgressBar);
-            progressBar.setVisibility(View.VISIBLE);
+            mProgressBar = findViewById(R.id.ProgressBar);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         /**
@@ -239,10 +259,10 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
          * 3. Queries matchHistory - last 8 games,
          * 4. Queries matchIds, stores results in mGameIdsAndWinLossMap, matchIds and default value of false
          * 5. For each match, queries match, determines which player won, then updates
-         *      mGameIdsAndWinLossMap accordingly
+         * mGameIdsAndWinLossMap accordingly
          *
          * @param strings TODO: update this when figure out what it does
-         * @return  TODO:
+         * @return TODO:
          */
         @SuppressLint("UseSparseArrays")
         @Override
@@ -408,7 +428,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                         won = false;
                     }
                     if (firstInFirstFive && won || !firstInFirstFive && !won) {
-                        mGameIdsAndWinLossMap.put((Long)me.getKey(), true);
+                        mGameIdsAndWinLossMap.put((Long) me.getKey(), true);
                         numWins++;
                     }
                 }
@@ -417,7 +437,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 rankedGameHistoryHttpsURLConnection.disconnect();
                 return null;
 
-            } catch(FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 failed = true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -437,7 +457,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             if (debug) System.out.println("onPostExecute");
 
             super.onPostExecute(avoid);
-            progressBar.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
             if (!failed) {
                 if (secondEverAppears) {
                     // getting rid of the null values in mMatchArrayList and corresponding elements in the map
