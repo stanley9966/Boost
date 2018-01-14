@@ -104,7 +104,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Settings");
+                getSupportActionBar().setTitle("Options");
             }
 
             @Override
