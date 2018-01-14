@@ -1,12 +1,18 @@
 package com.example.android.boost;
 
+import android.content.SharedPreferences;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MenuItem;
 
-// wraps colorFragment
-public class Settings extends AppCompatActivity {
+// wraps colorFragment and regionFragment
+public class SettingsActivity extends AppCompatActivity
+            implements SharedPreferences.OnSharedPreferenceChangeListener{
+    private static final String TAG = SettingsActivity.class.toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,5 +39,24 @@ public class Settings extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("region_list_preference_key")) {
+            MainScreenActivity.region = sharedPreferences.getString("region_list_preference_key", "");
+        }
     }
 }

@@ -24,7 +24,7 @@
             android:name=".QueryResultsScreen"
             android:label="@string/results" />
         <activity
-            android:name=".Settings"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_color_settings">
         </activity>
 

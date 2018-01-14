@@ -15,19 +15,18 @@
     <string name="color_scheme_setting">Color Scheme</string>
 
     <string-array name="servers_array">
-        <item>BR</item>
-        <item>EUNE</item>
-        <item>EUW</item>
-        <item>LAN</item>
-        <item>LAS</item>
-        <item>NA</item>
-        <item>OCE</item>
+
+        <item>EUN1</item>
+        <item>EUW2</item>
+        <item>LA1</item>
+        <item>LA2</item>
+        <item>NA1</item>
+        <item>OC1</item>
+        <item>BR1</item>
         <item>RU</item>
-        <item>TR</item>
-        <item>JP</item>
-        <item>SEA</item>
+        <item>TR1</item>
+        <item>JP1</item>
         <item>KR</item>
-        <item>CN</item>
     </string-array>
     <string name="title_activity_color_settings">Settings</string>
 

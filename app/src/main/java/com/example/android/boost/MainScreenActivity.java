@@ -38,25 +38,24 @@ import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class MainScreenActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainScreenActivity extends AppCompatActivity {
     private static final String TAG = MainScreenActivity.class.toString();
 
     // Things on Screen
-    private Spinner mSpinner;
     private AutoCompleteTextView mSumm1Tv;
     private AutoCompleteTextView mSumm2Tv;
     private ProgressBar mProgressBar;
     private NavigationView mNavigationView;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
-//    private Class mFragmentClass = null;
-//    private android.support.v4.app.Fragment mFragment = null;
+
+    static String region = "NA1";
 
     // STATIC DATA
     // final, TODO: change dynamically based on their input
     private static final String dataSet = "dataSet";
-    private static final String URL_QUERY = "https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String TEMP_API_KEY = "RGAPI-dc4ed6ee-c6c9-4edb-8437-26029a949165";
+    private static final String URL_QUERY = "https://" + region + ".api.riotgames.com/lol/summoner/v3/summoners/by-name/";
+    private static final String TEMP_API_KEY = "RGAPI-988a1380-7ced-49df-af23-e3a86db0cddc";
     private static String SUMMONER_NAME;
     private static String SECOND_SUMMONER_NAME;
 
@@ -124,13 +123,13 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                         switch (item.getItemId()) {
                             // 0 for color
                             case R.id.color_scheme_setting:
-                                Intent intent = new Intent(MainScreenActivity.this.getBaseContext(), Settings.class);
+                                Intent intent = new Intent(MainScreenActivity.this.getBaseContext(), SettingsActivity.class);
                                 intent.putExtra("type", 0);
                                 MainScreenActivity.this.startActivity(intent);
                                 break;
                             // 1 for region
                             case R.id.region_setting:
-                                Intent intent2 = new Intent(MainScreenActivity.this.getBaseContext(), Settings.class);
+                                Intent intent2 = new Intent(MainScreenActivity.this.getBaseContext(), SettingsActivity.class);
                                 intent2.putExtra("type", 1);
                                 MainScreenActivity.this.startActivity(intent2);
                                 break;
@@ -150,13 +149,6 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
 
         mSumm1Tv = findViewById(R.id.summoner_1_autocomplete);
         mSumm2Tv = findViewById(R.id.summoner_2_autocomplete);
-
-        mSpinner = findViewById(R.id.servers);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.servers_array,
-                android.R.layout.simple_spinner_item);    // using default simple mSpinner item
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setOnItemSelectedListener(this);
 
         //creates button
         Button connectButton = findViewById(R.id.connect_button);
@@ -223,20 +215,6 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
         mSumm2Tv.setThreshold(1);
     }
 
-    // FOR SPINNER
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-        Toast.makeText(parent.getContext(),
-                "OnItemSelectedListener : " + parent.getItemAtPosition(i).toString(),
-                Toast.LENGTH_SHORT).show();
-    }
-
-    // for mSpinner
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
-
     private class ConnectServerTask extends AsyncTask<String, Integer, Void> {
 
         boolean secondEverAppears = false;
@@ -295,7 +273,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                 //constructing URL_Query for ranked game match history
                 Uri.Builder builder = new Uri.Builder();
                 builder.scheme("https")
-                        .authority("na1.api.riotgames.com")
+                        .authority(region + ".api.riotgames.com")
                         .appendPath("lol")
                         .appendPath("match")
                         .appendPath("v3")
@@ -357,7 +335,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                     Map.Entry me = (Map.Entry) keyIterator.next();
                     Uri.Builder builder2 = new Uri.Builder();
                     builder2.scheme("https")
-                            .authority("na1.api.riotgames.com")
+                            .authority(region + ".api.riotgames.com")
                             .appendPath("lol")
                             .appendPath("match")
                             .appendPath("v3")
@@ -481,7 +459,7 @@ public class MainScreenActivity extends AppCompatActivity implements AdapterView
                     toast.show();
                 }
             } else {
-                Toast toast = Toast.makeText(MainScreenActivity.this, "Summoner1 does not have any ranked games played!",
+                Toast toast = Toast.makeText(MainScreenActivity.this, "Summoner1 does not have any ranked games played in that region!",
                         Toast.LENGTH_LONG);
                 toast.show();
             }

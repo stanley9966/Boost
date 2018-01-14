@@ -2,11 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:key="list_preference_key"
-        android:title="list_preference_title"
-        android:summary="list_preference_summary"
+        android:key="region_list_preference_key"
+        android:title="Region"
+        android:summary="Select your region here."
         android:entries="@array/servers_array"
         android:entryValues="@array/servers_array"
-        android:dialogTitle="list_preference_dialogTitle"/>
+        android:dialogTitle="Select a region from the options below."
+        android:defaultValue="NA"/>
 
 </PreferenceScreen>
