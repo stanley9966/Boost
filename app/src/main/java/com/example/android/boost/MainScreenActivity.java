@@ -54,9 +54,9 @@ public class MainScreenActivity extends AppCompatActivity {
     // final, TODO: change dynamically based on their input
     private static final String dataSet = "dataSet";
     private static final String URL_QUERY = "https://" + region + ".api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String TEMP_API_KEY = "RGAPI-988a1380-7ced-49df-af23-e3a86db0cddc";
-    private static String SUMMONER_NAME;
-    private static String SECOND_SUMMONER_NAME;
+    private static final String TEMP_API_KEY = "RGAPI-9ae41251-6084-4b32-b75a-56e0db5cbdf4";
+    private static String SUMMONER_NAME = "Obstinate";   // todo: remove this for testing
+    private static String SECOND_SUMMONER_NAME = "Gooben";
 
     // PACKAGE PROTECTED STATIC VARS so don't have to copy around everywhere
     static HashMap<Long, Boolean> mGameIdsAndWinLossMap;
@@ -156,8 +156,8 @@ public class MainScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    SUMMONER_NAME = mSumm1Tv.getText().toString();
-                    SECOND_SUMMONER_NAME = mSumm2Tv.getText().toString();
+//                    SUMMONER_NAME = mSumm1Tv.getText().toString();    todo: uncomment
+//                    SECOND_SUMMONER_NAME = mSumm2Tv.getText().toString();
 
                     if (SUMMONER_NAME.equals("") || SECOND_SUMMONER_NAME.equals("")) {
                         throw new NoSummonerException();
@@ -280,7 +280,7 @@ public class MainScreenActivity extends AppCompatActivity {
                         .appendPath("by-account")
                         .appendPath(mS1AccountID)
                         .appendQueryParameter("queue", "420")   // 420 is solo/duo ranked 5v5
-                        .appendQueryParameter("endIndex", "10")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
+                        .appendQueryParameter("endIndex", "2")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
                         .appendQueryParameter("api_key", TEMP_API_KEY);
                 URL rankedGameMatchURL = new URL(builder.build().toString());
                 HttpsURLConnection rankedGameHistoryHttpsURLConnection = (HttpsURLConnection) rankedGameMatchURL.openConnection();

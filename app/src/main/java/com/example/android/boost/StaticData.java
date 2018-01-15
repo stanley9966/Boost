@@ -1,6 +1,23 @@
 package com.example.android.boost;
 
+import java.util.HashMap;
+
 class StaticData {
+    public static HashMap<Integer, String> mSummonerSpellsHashMap = new HashMap<>();
+
+    public StaticData() {
+        mSummonerSpellsHashMap.put(34, "SummonerTeleport");
+        mSummonerSpellsHashMap.put(3, "SummonerExhaust");
+        mSummonerSpellsHashMap.put(21, "SummonerBarrier");
+        mSummonerSpellsHashMap.put(13, "SummonerMana");
+        mSummonerSpellsHashMap.put(4, "SummonerFlash");
+        mSummonerSpellsHashMap.put(14, "SummonerDot");
+        mSummonerSpellsHashMap.put(6, "SummonerHaste");
+        mSummonerSpellsHashMap.put(7, "SummonerHeal");
+        mSummonerSpellsHashMap.put(1, "SummonerBoost");
+        mSummonerSpellsHashMap.put(11, "SummonerSmite");
+    }
+
     public static String idToString(int id) {
         switch (id) {
             case 498: return "Xayah";
