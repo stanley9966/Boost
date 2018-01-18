@@ -10,19 +10,18 @@
     android:layout_marginTop="5dp"
     app:cardCornerRadius="4dp">
 
-    <RelativeLayout
-        android:id="@+id/rel"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="2">
 
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/firstSummonerStuff"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <ImageView
@@ -31,90 +30,129 @@
                 android:layout_height="wrap_content"
                 android:padding="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />         <!-- in the middle of parent to the very left -->
 
-            <ImageView
-                android:id="@+id/summoner1_spell1"
+            <LinearLayout
+                android:id="@+id/righterLin"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                app:layout_constraintLeft_toRightOf="@+id/champion_splash_art" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2"
+                app:layout_constraintLeft_toRightOf="@id/champion_splash_art">
 
-            <ImageView
-                android:id="@+id/summoner1_spell2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:paddingBottom="5dp"
-                app:layout_constraintLeft_toRightOf="@+id/champion_splash_art"
-                app:layout_constraintTop_toBottomOf="@+id/summoner1_spell1" />
+                <ImageView
+                    android:id="@+id/summoner1_spell1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/kda"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/damage"
-                app:layout_constraintLeft_toRightOf="@+id/summoner1_spell1"
-                app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/summoner1_spell2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/damage"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/summoner1_spell2"
-                app:layout_constraintTop_toBottomOf="@+id/kda" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2"
+                app:layout_constraintLeft_toRightOf="@id/righterLin"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp">
+
+                <TextView
+                    android:id="@+id/kda"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/damage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
 
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/secondSummonerStuff"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/firstSummonerStuff"
-            android:layout_toRightOf="@+id/firstSummonerStuff"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/champion2_splash_art"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
                 android:padding="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/summoner2_spell1"
+            <LinearLayout
+                android:id="@+id/otherRighterLin"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                app:layout_constraintLeft_toRightOf="@+id/champion2_splash_art" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2"
+                app:layout_constraintLeft_toRightOf="@id/champion2_splash_art">
 
-            <ImageView
-                android:id="@+id/summoner2_spell2"
+                <ImageView
+                    android:id="@+id/summoner2_spell1"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"/>
+
+                <ImageView
+                    android:id="@+id/summoner2_spell2"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:paddingBottom="5dp"
-                app:layout_constraintLeft_toRightOf="@+id/champion2_splash_art"
-                app:layout_constraintTop_toBottomOf="@+id/summoner2_spell1" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2"
+                app:layout_constraintLeft_toRightOf="@id/otherRighterLin"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp">
+
+                <TextView
+                    android:id="@+id/kda2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/damage2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
 
         </android.support.constraint.ConstraintLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

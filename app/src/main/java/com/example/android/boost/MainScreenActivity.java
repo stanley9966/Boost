@@ -54,7 +54,7 @@ public class MainScreenActivity extends AppCompatActivity {
     // final, TODO: change dynamically based on their input
     private static final String dataSet = "dataSet";
     private static final String URL_QUERY = "https://" + region + ".api.riotgames.com/lol/summoner/v3/summoners/by-name/";
-    private static final String TEMP_API_KEY = "RGAPI-9ae41251-6084-4b32-b75a-56e0db5cbdf4";
+    private static final String TEMP_API_KEY = "RGAPI-7ffc3484-b182-4598-8797-833e88376521";
     private static String SUMMONER_NAME = "Obstinate";   // todo: remove this for testing
     private static String SECOND_SUMMONER_NAME = "Gooben";
 

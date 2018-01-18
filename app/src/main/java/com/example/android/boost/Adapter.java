@@ -39,8 +39,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
         TextView sum1kda;
         TextView sum1damage;
 
-//        TextView sum2kda;
-//        TextView sum2damage;
+        TextView sum2kda;
+        TextView sum2damage;
 
         public AdapterViewHolder(View v) {
             super(v);
@@ -53,6 +53,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
             summoner2Spell2 = v.findViewById(R.id.summoner2_spell2);
             sum1kda = v.findViewById(R.id.kda);
             sum1damage = v.findViewById(R.id.damage);
+            sum2kda = v.findViewById(R.id.kda2);
+            sum2damage = v.findViewById(R.id.damage2);
         }
     }
 
@@ -114,7 +116,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
 
         // writing sum1 two textviews
         holder.sum1kda.setText(sum1KillsString + "/" + sum1AssistsString + "/" + sum1DeathsString);
-        holder.sum1damage.setText(sum1Damage + "k dam");
+        holder.sum1damage.setText(sum1Damage + " dam");
+        // writing sum2 two textviews
+        holder.sum2kda.setText(sum2KillsString + "/" + sum2AssistsString + "/" + sum2DeathsString);
+        holder.sum2damage.setText(sum2Damage + " dam");
 
         // changing color scheme of each card
         Boolean winLoss = MainScreenActivity.mGameIdsAndWinLossMap.get(matchKey);
@@ -131,7 +136,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
 //            holder.winloss.setText("L");
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.lightBackgroundColorRed));
             holder.sum1kda.setTextColor(ContextCompat.getColor(context, R.color.lightBackgroundColorTextRed));
+            holder.sum2kda.setTextColor(ContextCompat.getColor(context, R.color.lightBackgroundColorTextRed));
             holder.sum1damage.setTextColor(ContextCompat.getColor(context, R.color.lightBackgroundColorTextRed));
+            holder.sum2damage.setTextColor(ContextCompat.getColor(context, R.color.lightBackgroundColorTextRed));
+
         }
     }
 
