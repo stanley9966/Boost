@@ -6,7 +6,7 @@ class StaticData {
     public static HashMap<Integer, String> mSummonerSpellsHashMap = new HashMap<>();
 
     public StaticData() {
-        mSummonerSpellsHashMap.put(34, "SummonerTeleport");
+        mSummonerSpellsHashMap.put(12, "SummonerTeleport");
         mSummonerSpellsHashMap.put(3, "SummonerExhaust");
         mSummonerSpellsHashMap.put(21, "SummonerBarrier");
         mSummonerSpellsHashMap.put(13, "SummonerMana");

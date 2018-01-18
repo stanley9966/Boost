@@ -131,7 +131,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
             holder.cardView.setCardBackgroundColor(Color.GREEN);
             //holder.cardView.setBackgroundColor(ContextCompat.getColor(context, R.color.lighterGreen));
             holder.sum1kda.setTextColor(ContextCompat.getColor(context, R.color.darkerGreen));
+            holder.sum2kda.setTextColor(ContextCompat.getColor(context, R.color.darkerGreen));
             holder.sum1damage.setTextColor(ContextCompat.getColor(context, R.color.darkerGreen));
+            holder.sum2damage.setTextColor(ContextCompat.getColor(context, R.color.darkerGreen));
+
         } else {
 //            holder.winloss.setText("L");
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(context, R.color.lightBackgroundColorRed));
@@ -148,6 +151,5 @@ public class Adapter extends RecyclerView.Adapter<Adapter.AdapterViewHolder> {
     public int getItemCount() {
         return MainScreenActivity.mMatchArrayList.size();
     }
-
 
 }

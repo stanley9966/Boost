@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.android.boost.QueryResultsScreen"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/tile_background"
+    >
 
     <com.example.android.boost.WinRateCircle
         android:layout_width="match_parent"

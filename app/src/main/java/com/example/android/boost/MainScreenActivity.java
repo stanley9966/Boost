@@ -280,7 +280,7 @@ public class MainScreenActivity extends AppCompatActivity {
                         .appendPath("by-account")
                         .appendPath(mS1AccountID)
                         .appendQueryParameter("queue", "420")   // 420 is solo/duo ranked 5v5
-                        .appendQueryParameter("endIndex", "2")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
+                        .appendQueryParameter("endIndex", "20")   // start: 0 -- end: 2 --> only 2 games printed // TODO: DYNAMIC
                         .appendQueryParameter("api_key", TEMP_API_KEY);
                 URL rankedGameMatchURL = new URL(builder.build().toString());
                 HttpsURLConnection rankedGameHistoryHttpsURLConnection = (HttpsURLConnection) rankedGameMatchURL.openConnection();
